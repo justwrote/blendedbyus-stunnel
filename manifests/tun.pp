@@ -45,7 +45,7 @@ define stunnel::tun(
     mode => 600
   }
 
-  $certs = keys($services)
+  $certs = concat(keys($services), keys($snis))
   stunnel::certs { $certs:
     certs_dir => $certs_dir,
     certs_src_dir => $certs_src_dir,
