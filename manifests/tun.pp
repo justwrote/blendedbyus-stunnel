@@ -1,29 +1,32 @@
 define stunnel::tun(
-	$conf_dir		= $stunnel::data::conf_dir,
-	$certs_dir		= $stunnel::data::certs_dir,
+    $conf_dir        = $stunnel::data::conf_dir,
+    $certs_dir       = $stunnel::data::certs_dir,
+    $certs_src_dir   = $stunnel::data::certs_src_dir,
 
-	$protocol		= 'proxy',
-	$ssl_version		= 'all',
-	$client			= false,
+    $protocol        = 'proxy',
+    $options         = 'NO_SSLv2',
+    $ciphers         = 'HIGH:!aNULL:!MD5',
+    $session_timeout = '300',
+    $client          = false,
 
-	$user			= 'stunnel4',
-	$group			= 'stunnel4',
-	$pid			= "/var/run/stunnel4/${name}.pid",
-	$chroot			= false,
+    $user            = 'stunnel4',
+    $group           = 'stunnel4',
+    $pid             = "/var/run/stunnel4/${name}.pid",
+    $chroot          = false,
 
-	$debuglevel		= '0',
-	$output			= "/var/log/stunnel4/${name}.log",
+    $debuglevel      = '0',
+    $output          = "/var/log/stunnel4/${name}.log",
 
-	$verify			= false,
-	$cert			= false,
-	$key			= false,
-	$cafile			= false,
-	$crlfile		= false,
-	
-	$connect		= false,
-	
-	$chroot			= false,
-	$services,
+    $verify          = false,
+    $cert            = false,
+    $key             = false,
+    $cafile          = false,
+    $crlfile         = false,
+
+    $connect         = false,
+
+    $services,
+    $snis,
 ) {
 
   file { "${conf_dir}/${name}.conf":
@@ -44,7 +47,9 @@ define stunnel::tun(
 
   $certs = keys($services)
   stunnel::certs { $certs:
-	require => File["${certs_dir}"],
+    certs_dir => $certs_dir,
+    certs_src_dir => $certs_src_dir,
+    require => File["${certs_dir}"],
   }
 
 }

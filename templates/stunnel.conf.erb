@@ -1,6 +1,8 @@
 ; This stunnel config is managed by Puppet.
 <% if protocol %>protocol = <%= protocol %><% end %>
-sslVersion = <%= ssl_version %>
+options = <%= options %>
+ciphers = <%= ciphers %>
+session = <%= session_timeout %>
 <% if client %>client = yes<% end %>
 
 setuid = <%= user %>
@@ -25,6 +27,16 @@ output = <%= output %>
 accept = <% if param['accept'] %><%= param['accept'] %><% else %><%= accept %><% end %>
 <% if param['connect'] %>connect = <%= param['connect'] %><% elsif connect %>connect = <%= connect %><% end %>
 cert = <%= certs_dir %>/<% if param['cert'] %><%= param['cert'] %><% elsif cert %><%= cert %><% else %><%= service %>.pem<% end %>
+<% if param['key'] %>key = <%= param['key'] %><% elsif key %>key = <%= key %><% end %>
+<% if param['cafile'] %>CAfile = <%= param['cafile'] %><% elsif cert %>CAfile = <%= cafile %><% end %>
+<% if param['crlfile'] %>CRLfile = <%= param['crlfile'] %><% elsif crlfile %>CRLfile = <%= crlfile %><% end %>
+
+<% end -%>
+<% snis.each_pair do |sni, param| -%>
+[<%= sni %>]
+<% if param['sni'] %>sni = <%= param['sni'] %><% end %>
+<% if param['connect'] %>connect = <%= param['connect'] %><% elsif connect %>connect = <%= connect %><% end %>
+cert = <%= certs_dir %>/<% if param['cert'] %><%= param['cert'] %><% elsif cert %><%= cert %><% else %><%= sni %>.pem<% end %>
 <% if param['key'] %>key = <%= param['key'] %><% elsif key %>key = <%= key %><% end %>
 <% if param['cafile'] %>CAfile = <%= param['cafile'] %><% elsif cert %>CAfile = <%= cafile %><% end %>
 <% if param['crlfile'] %>CRLfile = <%= param['crlfile'] %><% elsif crlfile %>CRLfile = <%= crlfile %><% end %>
